@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: Simple AWS CloudFormation template for EC2 instance, S3 bucket, and HTML file
+Description: Simple AWS CloudFormation template for EC2 instance and S3 bucket
 
 Resources:
   MyEC2Instance:
@@ -10,69 +10,18 @@ Resources:
       SecurityGroups:
         - !Ref MySecurityGroup
       KeyName: newkey  # Replace with the name of your existing EC2 key pair
-      UserData:
-        Fn::Base64: |
-          #!/bin/bash
-          yum update -y
-          yum install -y httpd
-          service httpd start
-          chkconfig httpd on
-          aws s3 cp s3://kassaibucket/index.html /var/www/html/index.html
 
   MySecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: Enable SSH and HTTP access
+      GroupDescription: Enable SSH access
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: '22'
           ToPort: '22'
-          CidrIp: 0.0.0.0/0
-        - IpProtocol: tcp
-          FromPort: '80'
-          ToPort: '80'
           CidrIp: 0.0.0.0/0
 
   MyBucket:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: kassaibucket
-      WebsiteConfiguration:
-        IndexDocument: index.html
-
-  BucketPolicy:
-    Type: AWS::S3::BucketPolicy
-    Properties:
-      Bucket: !Ref MyBucket
-      PolicyDocument:
-        Statement:
-          - Sid: PublicReadGetObject
-            Effect: Allow
-            Principal: "*"
-            Action: s3:GetObject
-            Resource: !Join [ "", [ "arn:aws:s3:::", !Ref MyBucket, "/*" ] ]
-
-  EC2InstanceRole:
-    Type: AWS::IAM::Role
-    Properties:
-      AssumeRolePolicyDocument:
-        Version: "2012-10-17"
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service: ec2.amazonaws.com
-            Action: sts:AssumeRole
-      Policies:
-        - PolicyName: S3ReadPolicy
-          PolicyDocument:
-            Version: "2012-10-17"
-            Statement:
-              - Effect: Allow
-                Action: s3:GetObject
-                Resource: !Join [ "", [ "arn:aws:s3:::", !Ref MyBucket, "/*" ] ]
-
-  EC2InstanceProfile:
-    Type: AWS::IAM::InstanceProfile
-    Properties:
-      Roles:
-        - !Ref EC2InstanceRole
