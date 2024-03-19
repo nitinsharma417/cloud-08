@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: Simple AWS CloudFormation template for EC2 instance and S3 bucket
+Description: Simple AWS CloudFormation template for EC2 instance, S3 bucket, and HTML file
 
 Resources:
   MyEC2Instance:
@@ -14,14 +14,32 @@ Resources:
   MySecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: Enable SSH access
+      GroupDescription: Enable SSH and HTTP access
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: '22'
           ToPort: '22'
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: '80'
+          ToPort: '80'
           CidrIp: 0.0.0.0/0
 
   MyBucket:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: kassaibucket
+      WebsiteConfiguration:
+        IndexDocument: index.html
+
+  BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref MyBucket
+      PolicyDocument:
+        Statement:
+          - Sid: PublicReadGetObject
+            Effect: Allow
+            Principal: "*"
+            Action: s3:GetObject
+            Resource: !Join [ "", [ "arn:aws:s3:::", !Ref MyBucket, "/*" ] ]
