@@ -10,6 +10,14 @@ Resources:
       SecurityGroups:
         - !Ref MySecurityGroup
       KeyName: newkey  # Replace with the name of your existing EC2 key pair
+      UserData:
+        Fn::Base64: |
+          #!/bin/bash
+          yum update -y
+          yum install -y httpd
+          service httpd start
+          chkconfig httpd on
+          aws s3 cp s3://kassaibucket/index.html /var/www/html/index.html
 
   MySecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -43,3 +51,28 @@ Resources:
             Principal: "*"
             Action: s3:GetObject
             Resource: !Join [ "", [ "arn:aws:s3:::", !Ref MyBucket, "/*" ] ]
+
+  EC2InstanceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ec2.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: S3ReadPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: s3:GetObject
+                Resource: !Join [ "", [ "arn:aws:s3:::", !Ref MyBucket, "/*" ] ]
+
+  EC2InstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles:
+        - !Ref EC2InstanceRole
