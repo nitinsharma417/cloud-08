@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: Simple AWS CloudFormation template for EC2 instance, S3 bucket, and HTML file
+Description: Simple AWS CloudFormation template for EC2 instance and S3 bucket
 
 Resources:
   MyEC2Instance:
@@ -25,23 +25,3 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: kassaibucket
-      WebsiteConfiguration:
-        IndexDocument: index.html  # Replace with the name of your HTML file
-
-  MyS3Policy:
-    Type: AWS::IAM::Policy
-    Properties:
-      PolicyName: projectpolicy
-      PolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-          - Effect: Allow
-            Action:
-              - s3:GetObject
-              - s3:PutObject
-              - s3:ListBucket
-            Resource:
-              - "arn:aws:s3:::kassaibucket"
-              - "arn:aws:s3:::kassaibucket/*"
-      Roles:
-        - IAC  # Replace with the logical ID of your IAM role
