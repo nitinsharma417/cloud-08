@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: Simple AWS CloudFormation template for EC2 instance and S3 bucket
+Description: Simple AWS CloudFormation template for EC2 instance, S3 bucket, and HTML file
 
 Resources:
   MyEC2Instance:
@@ -25,3 +25,5 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: kassaibucket
+      WebsiteConfiguration:
+        IndexDocument: index.html  # Replace with the name of your HTML file
