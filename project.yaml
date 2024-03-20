@@ -28,7 +28,6 @@ Resources:
       WebsiteConfiguration:
         IndexDocument: index.html  # Replace with the name of your HTML file
 
- Resources:
   MyS3Policy:
     Type: AWS::IAM::Policy
     Properties:
