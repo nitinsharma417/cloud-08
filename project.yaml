@@ -42,4 +42,4 @@ Resources:
               - "arn:aws:s3:::kassaibucket"
               - "arn:aws:s3:::kassaibucket/*"
       Roles:
-        - IAC  # Replace with the logical ID of your IAM role
+        - IACrole  # Replace with the logical ID of your IAM role
