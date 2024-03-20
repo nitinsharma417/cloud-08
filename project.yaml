@@ -27,3 +27,22 @@ Resources:
       BucketName: kassaibucket
       WebsiteConfiguration:
         IndexDocument: index.html  # Replace with the name of your HTML file
+
+ Resources:
+  MyS3Policy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: projectpolicy
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action:
+              - s3:GetObject
+              - s3:PutObject
+              - s3:ListBucket
+            Resource:
+              - "arn:aws:s3:::kassaibucket"
+              - "arn:aws:s3:::kassaibucket/*"
+      Roles:
+        - IAC  # Replace with the logical ID of your IAM role
