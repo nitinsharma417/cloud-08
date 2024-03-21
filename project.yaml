@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 AWSTemplateFormatVersion: '2010-09-09'
 Description: Simple AWS CloudFormation template for EC2 instance and S3 bucket
 
@@ -25,3 +26,50 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: kassaibucket
+=======
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Simple AWS CloudFormation template for EC2 instance and S3 bucket
+
+Resources:
+  MyEC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      ImageId: ami-007020fd9c84e18c7  # Replace with the appropriate AMI ID
+      SecurityGroups:
+        - !Ref MySecurityGroup
+      KeyName: newkey  # Replace with the name of your existing EC2 key pair
+
+  MySecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable SSH access
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: '22'
+          ToPort: '22'
+          CidrIp: 0.0.0.0/0
+
+  MyBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: kassaibucket
+
+  MyS3Policy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: projectpolicy
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action:
+              - s3:GetObject
+              - s3:PutObject
+              - s3:ListBucket
+            Resource:
+              - "arn:aws:s3:::kassaibucket"
+              - "arn:aws:s3:::kassaibucket/*"
+      Roles:
+        - IACrole  # Replace with the logical ID of your IAM role
+>>>>>>> ee67b8db1e5fcd2eaad5eaf6e63b2b32e1511e55
