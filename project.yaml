@@ -24,4 +24,4 @@ Resources:
   MyBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: kassaibucket
+      BucketName: kassaibucket2
